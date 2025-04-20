@@ -1,0 +1,16 @@
+# Core Azure AI Services SDK and dependencies
+azure-ai-textanalytics==5.3.0
+azure-core==1.29.5
+
+# Authentication and security
+azure-identity==1.17.1
+azure-keyvault-secrets==4.8.0
+
+# Environment configuration
+python-dotenv==1.0.0
+
+# HTTP and networking
+requests==2.31.0
+
+# JSON processing for REST client
+urllib3==2.1.0
