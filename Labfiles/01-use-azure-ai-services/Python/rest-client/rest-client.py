@@ -1,17 +1,20 @@
 """
 * @description 
 * This module implements a REST client for Azure AI Services Language Detection.
-* It demonstrates how to make direct HTTP requests to Azure AI Services without using the SDK.
+* It demonstrates how to make direct HTTP requests to Azure AI Services with
+* proper SSL certificate verification.
 * 
 * Key features:
 * - Environment configuration loading
 * - Direct HTTP request handling to Azure AI endpoint
 * - JSON request/response processing for language detection
+* - Secure SSL certificate verification
 * 
 * @dependencies
 * - python-dotenv: Used for loading environment variables
 * - http.client: Used for making HTTP requests
 * - json: Used for JSON processing
+* - certifi: Used for SSL certificate verification
 * 
 * @notes
 * - Requires valid Azure AI Services endpoint and key in .env file
@@ -21,8 +24,11 @@
 
 from dotenv import load_dotenv
 import os
-import http.client, base64, json, urllib
-from urllib import request, parse, error
+import http.client
+import json
+import urllib.request
+import ssl
+import certifi
 
 def main():
     global ai_endpoint
@@ -47,6 +53,7 @@ def main():
 def GetLanguage(text):
     """
     Detects the language of input text using Azure AI Services REST API.
+    Uses proper SSL certificate verification.
     
     Args:
         text (str): Input text for language detection
@@ -58,6 +65,9 @@ def GetLanguage(text):
         Exception: If API call fails or response processing errors occur
     """
     try:
+        # Create SSL context with verified certificates
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
+        
         # Construct the JSON request body
         jsonBody = {
             "documents":[
@@ -69,9 +79,9 @@ def GetLanguage(text):
         # Display the request JSON for debugging
         print(json.dumps(jsonBody, indent=2))
 
-        # Set up HTTP connection to the Azure AI Services endpoint
+        # Set up HTTP connection to the Azure AI Services endpoint with SSL verification
         uri = ai_endpoint.rstrip('/').replace('https://', '')
-        conn = http.client.HTTPSConnection(uri)
+        conn = http.client.HTTPSConnection(uri, context=ssl_context)
 
         # Prepare headers with authentication key
         headers = {
@@ -101,7 +111,7 @@ def GetLanguage(text):
         conn.close()
 
     except Exception as ex:
-        print(ex)
+        print(f"Error: {ex}")
 
 if __name__ == "__main__":
     main()
