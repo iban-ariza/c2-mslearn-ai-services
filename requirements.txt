@@ -5,6 +5,7 @@ azure-core==1.29.5
 # Authentication and security
 azure-identity==1.17.1
 azure-keyvault-secrets==4.8.0
+certifi>=2023.7.22
 
 # Environment configuration
 python-dotenv==1.0.0
