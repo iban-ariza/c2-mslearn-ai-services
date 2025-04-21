@@ -41,17 +41,19 @@ def main():
         load_dotenv()
         ai_endpoint = os.getenv('AI_SERVICE_ENDPOINT')
         key_vault_name = os.getenv('KEY_VAULT')
+        key_vault_secret_name = os.getenv('KEY_VAULT_SECRET_NAME')
         app_tenant = os.getenv('TENANT_ID')
         app_id = os.getenv('APP_ID')
         app_password = os.getenv('APP_PASSWORD')
 
         # Set up Key Vault access using service principal
         key_vault_uri = f"https://{key_vault_name}.vault.azure.net/"
+        # Authenticate using service principal credentials (https://learn.microsoft.com/en-us/python/api/overview/azure/identity-readme?view=azure-python#defaultazurecredential)
         credential = ClientSecretCredential(app_tenant, app_id, app_password)
         keyvault_client = SecretClient(key_vault_uri, credential)
         
         # Retrieve AI Services key from Key Vault
-        secret_key = keyvault_client.get_secret("AI-Services-Key")
+        secret_key = keyvault_client.get_secret(key_vault_secret_name)
         cog_key = secret_key.value
 
         # Interactive language detection loop
